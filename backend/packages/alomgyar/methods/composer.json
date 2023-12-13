@@ -1,0 +1,23 @@
+{
+    "name": "skvadcom/methods",
+    "authors": [
+        {
+            "name": "aranytothtibor",
+            "email": "tibor.aranytoth@skvad.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Alomgyar\\Methods\\MethodsServiceProvider"
+            ]
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Alomgyar\\Methods\\": "/"
+        }
+    }
+}

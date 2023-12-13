@@ -1,0 +1,1 @@
+@livewire('wishlist', ['product' => $model->id])

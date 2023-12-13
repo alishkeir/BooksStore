@@ -1,0 +1,153 @@
+-- $allTotalSalesInThisPeriod = ProductMovementItems::getAllTotalSalesInThisPeriod($startDate, $endDate);
+select `product_movements_items`.`product_id`, SUM(`stock_out`) as total_sales
+from `product_movements_items`
+where `product_movements_items`.`product_movements_id` in (select `id` from `product_movements` where `created_at` between '2021-10-01 00:00:00' and '2021-10-31 23:59:59' and `destination_type` in (1,2))
+group by `product_movements_items`.`product_id`;
+
+-- $selectedProductMovementsInThisPeriod = ProductMovement::getSelectedProductMovementsInThisPeriod(collect($allTotalSalesInThisPeriod)->pluck('product_id'));
+select `product_movements`.`id`
+from `product_movements` where exists (
+    select * from `product_movements_items` where `product_movements`.`id` = `product_movements_items`.`product_movements_id`
+    and `product_id` in (
+        select sales_table.product_id from (
+            select `product_movements_items`.`product_id`, SUM(`stock_out`) as total_sales
+            from `product_movements_items`
+            where `product_movements_items`.`product_movements_id` in (select `id` from `product_movements` where `created_at` between '2021-10-01 00:00:00' and '2021-10-31 23:59:59' and `destination_type` in (1,2))
+            group by `product_movements_items`.`product_id`
+            ) as sales_table
+        )
+    and (`remaining_quantity_from_report` is null or `remaining_quantity_from_report` > 0)
+    and `product_movements_items`.`deleted_at` is null
+)
+and `destination_type` = 3
+and `product_movements`.`deleted_at` is null;
+
+-- $consumptions = ProductMovementItems::getConsumptions($startDate, $endDate, collect($selectedProductMovementsInThisPeriod)->pluck('id'));
+select `product_movements_items`.`id`,`product_movements_items`.`product_id`, `product_movements_items`.`purchase_price`, `product_movements`.`source_id` as supplier_id,
+`suppliers`.`percent`, `suppliers`.`title` as `supplier_name`,
+`sales`.`total_sales`, `product`.`tax_rate`, `product_price`.`price_list`, `product_movements_items`.`stock_in`, `product_movements_items`.`remaining_quantity_from_report`,
+`product`.`title` as `product_title`, `product`.`isbn`
+from `product_movements_items`
+inner join `product_movements` on `product_movements_items`.`product_movements_id` = `product_movements`.`id`
+inner join `suppliers` on `product_movements`.`source_id` = `suppliers`.`id`
+inner join (
+    select `product_movements_items`.`product_id`, SUM(`stock_out`) as total_sales
+    from `product_movements_items`
+    where `product_movements_items`.`product_movements_id` in (select `id` from `product_movements` where `created_at` between '2021-10-01 00:00:00' and '2021-10-31 23:59:59' and `destination_type` in (1,2))
+    group by `product_movements_items`.`product_id`
+    ) as sales on `product_movements_items`.`product_id` = `sales`.`product_id`
+inner join `product` on `product`.`id` = `product_movements_items`.`product_id`
+inner join `product_price` on `product`.`id` = `product_price`.`product_id` and `product_price`.`store` = 0
+where `product_movements_id` in (
+    select `product_movements`.`id`
+    from `product_movements` where exists (
+        select * from `product_movements_items` where `product_movements`.`id` = `product_movements_items`.`product_movements_id`
+        and `product_id` in (
+            select sales_table.product_id from (
+                select `product_movements_items`.`product_id`, SUM(`stock_out`) as total_sales
+                from `product_movements_items`
+                where `product_movements_items`.`product_movements_id` in (select `id` from `product_movements` where `created_at` between '2021-10-01 00:00:00' and '2021-10-31 23:59:59' and `destination_type` in (1,2))
+                group by `product_movements_items`.`product_id`
+                ) as sales_table
+            )
+        and (`remaining_quantity_from_report` is null or `remaining_quantity_from_report` > 0)
+        and `product_movements_items`.`deleted_at` is null
+    )
+    and `destination_type` = 3
+    and `product_movements`.`deleted_at` is null
+)
+and `sales`.`total_sales` is not null
+group by `id`, `product_id`, `purchase_price`, `source_id`, `percent`, `total_sales`, `tax_rate`, `price_list`
+order by `product_id`;
+
+
+-- only consumptions
+select `product_movements_items`.`product_id`, `sales`.`total_sales`
+from `product_movements_items`
+inner join `product_movements` on `product_movements_items`.`product_movements_id` = `product_movements`.`id`
+inner join `suppliers` on `product_movements`.`source_id` = `suppliers`.`id`
+inner join (
+    select `product_movements_items`.`product_id`, SUM(`stock_out`) as total_sales
+    from `product_movements_items`
+    where `product_movements_items`.`product_movements_id` in (select `id` from `product_movements` where `created_at` between '2021-10-01 00:00:00' and '2021-10-31 23:59:59' and `destination_type` in (1,2))
+    group by `product_movements_items`.`product_id`
+    ) as sales on `product_movements_items`.`product_id` = `sales`.`product_id`
+inner join `product` on `product`.`id` = `product_movements_items`.`product_id`
+inner join `product_price` on `product`.`id` = `product_price`.`product_id` and `product_price`.`store` = 0
+where `product_movements_id` in (
+    select `product_movements`.`id`
+    from `product_movements` where exists (
+        select * from `product_movements_items` where `product_movements`.`id` = `product_movements_items`.`product_movements_id`
+        and `product_id` in (
+            select sales_table.product_id from (
+                select `product_movements_items`.`product_id`, SUM(`stock_out`) as total_sales
+                from `product_movements_items`
+                where `product_movements_items`.`product_movements_id` in (select `id` from `product_movements` where `created_at` between '2021-10-01 00:00:00' and '2021-10-31 23:59:59' and `destination_type` in (1,2))
+                group by `product_movements_items`.`product_id`
+                ) as sales_table
+            )
+        and (`remaining_quantity_from_report` is null or `remaining_quantity_from_report` > 0)
+        and `product_movements_items`.`deleted_at` is null
+    )
+    and `destination_type` = 3
+    and `product_movements`.`deleted_at` is null
+)
+and `sales`.`total_sales` is not null
+group by `product_id`, `total_sales`
+order by `product_id`
+limit 50;
+
+-- only stock-ins
+select `product_movements_items`.`id`,`product_movements_items`.`product_id`, `product_movements_items`.`purchase_price`, `product_movements`.`source_id` as supplier_id,
+`suppliers`.`percent`, `suppliers`.`title` as `supplier_name`,
+`product`.`tax_rate`, `product_price`.`price_list`, `product_movements_items`.`stock_in`, `product_movements_items`.`remaining_quantity_from_report`,
+`product`.`title` as `product_title`, `product`.`isbn`
+from `product_movements_items`
+inner join `product_movements` on `product_movements_items`.`product_movements_id` = `product_movements`.`id`
+inner join `suppliers` on `product_movements`.`source_id` = `suppliers`.`id`
+inner join (
+    select `product_movements_items`.`product_id`, SUM(`stock_out`) as total_sales
+    from `product_movements_items`
+    where `product_movements_items`.`product_movements_id` in (select `id` from `product_movements` where `created_at` between '2021-10-01 00:00:00' and '2021-10-31 23:59:59' and `destination_type` in (1,2))
+    group by `product_movements_items`.`product_id`
+    ) as sales on `product_movements_items`.`product_id` = `sales`.`product_id`
+inner join `product` on `product`.`id` = `product_movements_items`.`product_id`
+inner join `product_price` on `product`.`id` = `product_price`.`product_id` and `product_price`.`store` = 0
+where `product_movements_id` in (
+    select `product_movements`.`id`
+    from `product_movements` where exists (
+        select * from `product_movements_items` where `product_movements`.`id` = `product_movements_items`.`product_movements_id`
+        and `product_id` in (
+            select sales_table.product_id from (
+                select `product_movements_items`.`product_id`, SUM(`stock_out`) as total_sales
+                from `product_movements_items`
+                where `product_movements_items`.`product_movements_id` in (select `id` from `product_movements` where `created_at` between '2021-10-01 00:00:00' and '2021-10-31 23:59:59' and `destination_type` in (1,2))
+                group by `product_movements_items`.`product_id`
+                ) as sales_table
+            )
+        and (`remaining_quantity_from_report` is null or `remaining_quantity_from_report` > 0)
+        and `product_movements_items`.`deleted_at` is null
+    )
+    and `destination_type` = 3
+    and `product_movements`.`deleted_at` is null
+)
+and `sales`.`total_sales` is not null
+group by `id`, `product_id`, `purchase_price`, `source_id`, `percent`, `tax_rate`, `price_list`
+order by `product_id`
+limit 50;
+
+
+
+-- Segéd táblák
+select sales_table.product_id from (
+select `product_movements_items`.`product_id`, SUM(`stock_out`) as total_sales
+from `product_movements_items`
+where `product_movements_items`.`product_movements_id` in (select `id` from `product_movements` where `created_at` between '2021-10-01 00:00:00' and '2021-10-31 23:59:59' and `destination_type` in (1,2))
+group by `product_movements_items`.`product_id`
+) as sales_table;
+
+
+
+update `product_movements_items`
+set remaining_quantity_from_report = null
+where `created_at` between '2021-10-01 00:00:00' and '2021-10-31 23:59:59'

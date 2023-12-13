@@ -1,0 +1,23 @@
+{
+    "name": "skvadcom/authors",
+    "authors": [
+        {
+            "name": "aranytothtibor",
+            "email": "tibor.aranytoth@skvad.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Alomgyar\\Authors\\AuthorServiceProvider"
+            ]
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Alomgyar\\Authors\\": "/"
+        }
+    }
+}

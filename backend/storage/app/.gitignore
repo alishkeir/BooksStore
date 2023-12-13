@@ -1,0 +1,7 @@
+*
+!import/warehouse/20_raktarkeszlet.xlsx
+!public/
+!.gitignore
+!product-movements/termekmozgato-minta.xlsx
+!consumption-reports/minta.xlsx
+!orders/minta.xlsx

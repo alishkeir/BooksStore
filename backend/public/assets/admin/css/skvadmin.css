@@ -1,0 +1,108 @@
+.nav-sidebar .nav-item:not(.nav-item-divider).active {
+    background-color: #26a69a;
+    color: #fff;
+}
+.sidebar-dark .nav-sidebar .nav-item:not(.nav-item-divider):hover {
+    color: #fff;
+    background-color: rgba(0,0,0,.15);
+}
+
+.sidebar-dark .nav-sidebar .nav-link:not(.disabled):hover {
+    background-color: transparent;
+}
+.breadcrumb-item {
+    text-transform: capitalize;
+}
+li .nav-link:first-child {
+    display: inline-block;
+    width: 100%;
+}
+
+/* DROPZONE */
+.dropzone{
+    min-height: 3rem;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+}
+.dropzone .col-form-label {
+    margin: .3125rem;
+    width: 100%;
+}
+.handler-container {
+    padding: 0.6rem;
+    background-color: rgba(221, 221, 221, 0.3);
+    border: 1px solid rgba(170, 170, 170, 0.3);
+    cursor: move;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.dropzone .dz-preview, .dropzone-previews .dz-preview {
+    display:flex;
+    padding: 0;
+    box-shadow: none;
+    border: 1px solid rgba(170, 170, 170, 0.3);
+}
+.dropzone .dz-preview .dz-image img, .dropzone-previews .dz-preview .dz-image img {width:6rem;}
+.dropzone.dz-started .dz-message {opacity: 1}
+.dz-image, .dz-details, .dz-input-fields {
+    margin-left:1rem;
+    margin-top:1rem;
+    margin-bottom:1rem;
+}
+
+.dz-details {
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+}
+.dz-remove {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    color: rgba(170, 170, 170, 0.5);
+    cursor: pointer;
+}
+.dz-input-fields {align-self: center;}
+.dz-message {
+    color: #999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 3rem;
+    align-self: center;
+    order: 1;
+    width: 100%;
+    text-align: center;
+}
+#tpl-single, #tpl-multiple {display: none}
+
+.z-50 {
+    z-index: 50;
+}
+.outline-none {
+    outline: 0;
+}
+
+.is-dragover {
+    min-height: 5rem;
+    box-shadow: 0 0 0 3px rgba(38, 166, 154, 0.45);
+}
+
+.ui-state-highlight {
+    min-height: 5rem;
+    width: 100%;
+    background-color: rgba(221, 221, 221, 0.3);
+    border: 1px dashed rgba(170, 170, 170, 0.3);
+}
+
+.note-editor.note-frame .note-editing-area {
+    padding: 1.25rem;
+}
+
+/** MEDIA MANAGER **/
+.media-page-body .media-body {
+    overflow: hidden;
+    white-space: nowrap;
+}

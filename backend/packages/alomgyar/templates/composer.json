@@ -1,0 +1,23 @@
+{
+    "name": "skvadcom/templates",
+    "authors": [
+        {
+            "name": "aranytothtibor",
+            "email": "tibor.aranytoth@skvad.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Alomgyar\\Templates\\TemplatesServiceProvider"
+            ]
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Alomgyar\\Templates\\": "/"
+        }
+    }
+}

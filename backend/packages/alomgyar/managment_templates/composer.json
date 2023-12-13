@@ -1,0 +1,23 @@
+{
+    "name": "skvadcom/managment_templates",
+    "authors": [
+        {
+            "name": "aranytothtibor",
+            "email": "tibor.aranytoth@skvad.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Alomgyar\\Managment_templates\\Managment_templateServiceProvider"
+            ]
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Alomgyar\\Managment_templates\\": "/"
+        }
+    }
+}

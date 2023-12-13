@@ -1,0 +1,23 @@
+{
+    "name": "alomgyar/writers",
+    "authors": [
+        {
+            "name": "ecsedyjanos",
+            "email": "janos.ecsedy@skvad.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Alomgyar\\Writers\\WriterServiceProvider"
+            ]
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Alomgyar\\Writers\\": "/"
+        }
+    }
+}

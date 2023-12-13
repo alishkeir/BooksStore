@@ -1,0 +1,16 @@
+{
+  "env": {
+    "browser": true,
+    "node": true,
+    "es2021": true,
+    "mocha": true
+  },
+  "extends": ["eslint:recommended", "next"],
+  "rules": {
+    "react/react-in-jsx-scope": "off",
+    "react/prop-types": "off",
+    "react-hooks/exhaustive-deps": "off",
+    "no-irregular-whitespace": "off"
+
+  }
+}

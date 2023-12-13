@@ -1,0 +1,23 @@
+{
+    "name": "skvadcom/countries",
+    "authors": [
+        {
+            "name": "aranytothtibor",
+            "email": "tibor.aranytoth@skvad.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Alomgyar\\Countries\\CountryServiceProvider"
+            ]
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Alomgyar\\Countries\\": "/"
+        }
+    }
+}

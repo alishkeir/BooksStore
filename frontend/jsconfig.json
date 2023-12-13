@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@node_modules/*": ["./node_modules/*"],
+      "@components/*": ["./components/*"],
+      "@hooks/*": ["./hooks/*"],
+      "@assets/*": ["./assets/*"],
+      "@store/*": ["./store/*"],
+      "@vars/*": ["./vars/*"],
+      "@libs/*": ["./libs/*"]
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+    "name": "skvadcom/consumption_reports",
+    "authors": [
+        {
+            "name": "aranytothtibor",
+            "email": "tibor.aranytoth@skvad.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "extra": {
+        "laravel": {
+            "providers": [
+              "ConsumptionReportServiceProvider"
+            ]
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Alomgyar\\Consumption_reports\\": "/"
+        }
+    }
+}

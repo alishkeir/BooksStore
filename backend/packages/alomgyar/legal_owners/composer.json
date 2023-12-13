@@ -1,0 +1,23 @@
+{
+    "name": "alomgyar/legal_owners",
+    "authors": [
+        {
+            "name": "ecsedyjanos",
+            "email": "janos.ecsedy@skvad.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Alomgyar\\Legal owners\\LegalOwnerServiceProvider"
+            ]
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Alomgyar\\Legal_owners\\": "/"
+        }
+    }
+}

@@ -1,0 +1,87 @@
+version: "3.7"
+services:
+  php:
+    image: registry.gitlab.com/skvad-dev/php:8.0
+    ports:
+      - 22200:80
+    restart: unless-stopped
+    depends_on:
+      - db
+    volumes:
+      - .:/var/www/
+      - ./.php/custom.php.ini:/usr/local/etc/php/conf.d/custom.ini
+      #- ./.php/xdebug.php.ini:/usr/local/etc/php/conf.d/xdebug.ini
+    environment:
+      - DB_PORT=${DB_PORT}
+      - DB_HOST=${DB_HOST}
+    container_name: alomgyar-web
+    security_opt:
+      - no-new-privileges:true
+    labels:
+      # Enable this container to be mapped by traefik
+      # For more information, see: https://docs.traefik.io/providers/docker/#exposedbydefault
+      - "traefik.enable=true"
+      # URL to reach this container
+      - "traefik.http.routers.alomgyar.rule=Host(`alomgyar.local.test`)"
+      # Activation of TLS
+      - "traefik.http.routers.alomgyar.tls=true"
+      # If port is different than 80, use the following service:
+      # - "traefik.http.services.<service_name>.loadbalancer.server.port=<port>"
+    networks:
+      - proxy
+
+  db:
+    image: mysql:8
+    environment:
+      - MYSQL_ROOT_PASSWORD=${ROOT_PASSWORD}
+      - MYSQL_DATABASE=${DB_DATABASE}
+      - MYSQL_USER=${DB_USERNAME}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+    ports:
+      - 22201:3306
+    restart: unless-stopped
+    volumes:
+      # - ./db/dump.sql:/docker-entrypoint-initdb.d/dump.sql
+      - db-volume:/var/lib/mysql
+    command:
+      [
+        "mysqld",
+        "--character-set-server=utf8mb4",
+        "--collation-server=utf8mb4_unicode_ci",
+      ]
+    container_name: alomgyar-db
+    networks:
+      - proxy
+
+  adminer:
+    image: adminer:standalone
+    ports:
+      - 22202:8080
+    restart: unless-stopped
+    depends_on:
+      - db
+    environment:
+      ADMINER_DESIGN: nette
+      ADMINER_PLUGINS: dump-date edit-calendar enum-option enum-types sql-log struct-comments tables-filter
+    container_name: alomgyar-adminer
+    security_opt:
+      - no-new-privileges:true
+    labels:
+      # Enable this container to be mapped by traefik
+      # For more information, see: https://docs.traefik.io/providers/docker/#exposedbydefault
+      - "traefik.enable=true"
+      # URL to reach this container
+      - "traefik.http.routers.alomgyar-adminer.rule=Host(`db-alomgyar.local.test`)"
+      # Activation of TLS
+      - "traefik.http.routers.alomgyar-adminer.tls=true"
+      # If port is different than 80, use the following service:
+      # - "traefik.http.services.<service_name>.loadbalancer.server.port=<port>"
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true
+
+volumes:
+  db-volume:

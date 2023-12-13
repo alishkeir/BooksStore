@@ -1,0 +1,56 @@
+version: '3.9'
+
+services:
+  webserver:
+    container_name: ${servicename}
+    hostname: ${servicename}
+    image: ubuntu2004nextjscurrent:latest
+    volumes:
+      - /data/${servicename}/user-conf:/etc/apache2/user-conf
+      - /data/${servicename}/wwwroot:/var/www/html
+      - gitkey:/root/gitkey
+    restart: always
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.${servicename}-http.entrypoints=web'
+      - 'traefik.http.routers.${servicename}-http.rule=Host(`olcsokonyvek.skvad.live`)'
+      - 'traefik.http.routers.${servicename}-http.middlewares=${servicename}-https'
+      - 'traefik.http.middlewares.${servicename}-https.redirectscheme.scheme=https'
+      - 'traefik.http.routers.${servicename}.entrypoints=websecure'
+      - 'traefik.http.routers.${servicename}.rule=Host(`olcsokonyvek.skvad.live`)'
+      #      - "traefik.http.routers.${servicename}.middlewares=auth"
+      - 'traefik.http.services.${servicename}.loadbalancer.server.port=3000'
+      - 'traefik.docker.network=net1'
+      - 'traefik.http.routers.${servicename}.tls=true'
+      - 'traefik.http.routers.${servicename}.tls.certresolver=myresolver'
+      #      - "traefik.http.middlewares.auth.basicauth.users=skvad:$$apr1$$/jMp1q6T$$I7p8a/52xSeMcDf5g0/gg."
+    networks:
+      - net1
+      - internal
+      - redisnet
+      - lognet
+    environment:
+      - GITURL=git@gitlab.com:skvad-dev/alomgyar-webshop-fe.git
+      - GITKEY=/root/gitkey/gitlab-skvad.key
+      - GITTAG=olcsokonyvek.skvad.live
+      - UPDATE=0
+      - GITRECREATE=1
+      - PERSISTENTDIRS=
+      - DUMMY=1
+      - PUSHACTION=deploy
+      - AFTERSCRIPT=runafter.sh
+
+networks:
+  net1:
+    external: true
+  redisnet:
+    external: true
+  adminernet:
+    external: true
+  lognet:
+    external: true
+  internal:
+
+volumes:
+  gitkey:
+    external: true

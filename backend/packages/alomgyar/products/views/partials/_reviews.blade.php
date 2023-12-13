@@ -1,0 +1,1 @@
+@livewire('reviewlist', ['product' => $model->id])

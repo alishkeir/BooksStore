@@ -1,0 +1,55 @@
+stages:
+  - deploy
+  - deploy_staging
+  - deploy_dev
+
+deploy:
+  stage: deploy
+  only:
+    - prod
+  image:
+    name: debreczeniandras/deployerphp:7-beta
+    entrypoint: [""]
+  before_script:
+    - mkdir -p ~/.ssh
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+    - echo "${SSH_PRIVATE_KEY}" >> ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - eval $(ssh-agent -s)
+  script:
+    - dep deploy setup=prod -v --branch ${CI_COMMIT_REF_NAME}
+    - dep configure setup=prod -v --branch ${CI_COMMIT_REF_NAME}
+
+deploy_staging:
+  stage: deploy
+  only:
+    - staging
+  image:
+    name: debreczeniandras/deployerphp:7-beta
+    entrypoint: [""]
+  before_script:
+    - mkdir -p ~/.ssh
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+    - echo "${SSH_PRIVATE_KEY}" >> ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - eval $(ssh-agent -s)
+  script:
+    - dep deploy setup=staging -v --branch ${CI_COMMIT_REF_NAME}
+    - dep configure setup=staging -v --branch ${CI_COMMIT_REF_NAME}
+
+deploy_dev:
+  stage: deploy
+  only:
+    - dev
+  image:
+    name: debreczeniandras/deployerphp:7-beta
+    entrypoint: [""]
+  before_script:
+    - mkdir -p ~/.ssh
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+    - echo "${SSH_PRIVATE_KEY}" >> ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - eval $(ssh-agent -s)
+  script:
+    - dep deploy setup=dev -v --branch ${CI_COMMIT_REF_NAME}
+    - dep configure setup=dev -v --branch ${CI_COMMIT_REF_NAME}

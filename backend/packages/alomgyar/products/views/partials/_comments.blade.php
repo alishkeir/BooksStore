@@ -1,0 +1,1 @@
+@livewire('commentlist', ['product' => $model->id])

@@ -1,0 +1,74 @@
+version: "3.9"
+
+services:
+  webserver:
+    container_name: ${servicename}
+    hostname: ${servicename}
+    image: ubuntu2004php80fpm:latest
+    volumes:
+      - /data/${servicename}/user-conf:/etc/apache2/user-conf
+      - /data/${servicename}/wwwroot:/var/www/html
+      - gitkey:/root/gitkey
+    restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.${servicename}-http.entrypoints=web"
+      - "traefik.http.routers.${servicename}-http.rule=Host(`pamadmin.hu`)"
+      - "traefik.http.routers.${servicename}-http.middlewares=${servicename}-https"
+      - "traefik.http.middlewares.${servicename}-https.redirectscheme.scheme=https"
+      - "traefik.http.routers.${servicename}.entrypoints=websecure"
+      - "traefik.http.routers.${servicename}.rule=Host(`pamadmin.hu`)"
+      #     - "traefik.http.routers.${servicename}.middlewares=auth"
+      - "traefik.http.services.${servicename}.loadbalancer.server.port=80"
+      - "traefik.docker.network=net1"
+      - "traefik.http.routers.${servicename}.tls=true"
+      #      - "traefik.http.middlewares.auth.basicauth.users=skvad:$$apr1$$/jMp1q6T$$I7p8a/52xSeMcDf5g0/gg."
+      - "traefik.http.routers.${servicename}.tls.certresolver=myresolver"
+    networks:
+      - net1
+      - internal
+      - redisnet
+      - lognet
+    environment:
+      - GITURL=git@gitlab.com:skvad-dev/alomgyar-webshop-be.git
+      - GITKEY=/root/gitkey/gitlab-skvad.key
+      - GITTAG=pamadmin.hu
+      - UPDATE=0
+      - PERSISTENTDIRS=
+      - HTPASSWDUSER=
+      - HTPASSWDPWD=
+      - CUSTWWWROOT=public
+      - PUSHACTION=deploy
+      - AFTERSCRIPT=runafter.sh
+  db:
+    image: mysql80withcnf:latest
+    container_name: ${servicename}_db
+    hostname: ${servicename}_db
+    environment:
+      - MYSQL_ROOT_PASSWORD=${mysql_root_password}
+      - MYSQL_DATABASE=${servicename}
+      - MYSQL_USER=${servicename}
+      - MYSQL_PASSWORD=${mysql_password}
+    restart: always
+    networks:
+      - internal
+      - adminernet
+    volumes:
+      - /data/${servicename}/mysql/data:/var/lib/mysql
+      - /data/${servicename}/mysql/user-conf/:/etc/mysql/user-conf/
+
+
+networks:
+  net1:
+    external: true
+  redisnet:
+    external: true
+  adminernet:
+    external: true
+  lognet:
+    external: true
+  internal:
+
+volumes:
+  gitkey:
+    external: true

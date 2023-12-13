@@ -1,0 +1,42 @@
+@import './variables.scss';
+@import './fonts.scss';
+@import '/node_modules/bootstrap/scss/bootstrap-reboot.scss';
+@import '/node_modules/bootstrap/scss/bootstrap-grid.scss';
+@import '/node_modules/swiper/swiper.scss';
+@import '/node_modules/swiper/modules/pagination/pagination.scss';
+@import '/node_modules/swiper/modules/scrollbar/scrollbar.scss';
+
+html,
+body {
+  font-family: 'Poppins', Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  font-weight: 300;
+  color: #353535;
+}
+body {
+  background-color: #212121;
+}
+a {
+  color: #353535;
+  text-decoration: none;
+  &:hover {
+    text-decoration: none;
+    color: #353535;
+  }
+}
+
+body {
+  &.fixed {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    overflow-y: scroll;
+  }
+}
+
+.grecaptcha-badge {
+  visibility: hidden;
+}

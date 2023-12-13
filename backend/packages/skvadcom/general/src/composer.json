@@ -1,0 +1,24 @@
+{
+    "name": "skvadcom/general",
+    "authors": [
+        {
+            "name": "aranytothtibor",
+            "email": "tibor.aranytoth@skvad.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Skvadcom\\General\\GeneralServiceProvider"
+            ]
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Skvadcom\\General\\": "src/"
+        }
+        
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "There was an error on row :row. :message": "A :row. sorban hibát találtunk. :message",
+    "Reset Password": "Jelszó helyreállítás",
+    "E-Mail Address": "Email cím",
+    "Password": "Jelszó",
+    "Confirm Password": "Jelszó újra",
+    "We have emailed your password reset link!": "A jelszó módosításhoz szükséges tennivalót emailben elküldtük!",
+    "Send Password Reset Link": "Jelszó módosítás igénylés",
+    "Remember Me": "Emlékezz rám",
+    "Login": "Belépés",
+    "Forgot Your Password?": "Elfelejtetted a jelszavad?",
+    "The email field is required.": "Az email mező kitöltése kötelező.",
+    "The given data was invalid.": "A megadott adatok helytelenek."
+}

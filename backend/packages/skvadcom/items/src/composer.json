@@ -1,0 +1,23 @@
+{
+    "name": "skvadcom/items",
+    "authors": [
+        {
+            "name": "aranytothtibor",
+            "email": "tibor.aranytoth@skvad.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Skvadcom\\Items\\ItemServiceProvider"
+            ]
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Skvadcom\\Items\\": "/"
+        }
+    }
+}

@@ -1,0 +1,23 @@
+{
+    "name": "skvadcom/categories",
+    "authors": [
+        {
+            "name": "skvaddigital",
+            "email": "hello@skvad.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Alomgyar\\Categories\\CategoryServiceProvider"
+            ]
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Alomgyar\\Categories\\": "/"
+        }
+    }
+}

@@ -1,0 +1,23 @@
+{
+    "name": "skvadcom/statistics",
+    "authors": [
+        {
+            "name": "novotnikristof",
+            "email": "intovon@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Alomgyar\\Statistics\\StatisticsServiceProvider"
+            ]
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Alomgyar\\Statistics\\": "/"
+        }
+    }
+}

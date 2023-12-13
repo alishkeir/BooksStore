@@ -1,0 +1,23 @@
+{
+    "name": "skvadcom/permissions",
+    "authors": [
+        {
+            "name": "aranytothtibor",
+            "email": "tibor.aranytoth@skvad.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Skvadcom\\Permissions\\PermissionServiceProvider"
+            ]
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Skvadcom\\Permissions\\": "/"
+        }
+    }
+}

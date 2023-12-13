@@ -1,0 +1,23 @@
+{
+    "name": "skvadcom/logs",
+    "authors": [
+        {
+            "name": "aranytothtibor",
+            "email": "tibor.aranytoth@skvad.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Skvadcom\\Logs\\LogServiceProvider"
+            ]
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Skvadcom\\Logs\\": "src/"
+        }
+    }
+}

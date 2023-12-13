@@ -1,0 +1,106 @@
+image: node:16.14-bullseye-slim
+
+build_staging:
+  stage: build
+  only:
+    - staging
+  script:
+    - apt-get update
+    - apt-get install ca-certificates -y
+    # - rm .sentryclirc
+    - echo "$SENTRY_CLI_TOKEN" > .sentryclirc
+    # - rm .env
+    - echo "$STAGING_ENV" > .env
+    - npm install
+    - npm run build
+    #- npx next build
+  artifacts:
+    paths:
+      - node_modules/
+      - .next/
+      - .env
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
+      - .next/cache/
+
+deploy_staging:
+  stage: deploy
+  only:
+    - staging
+  environment:
+    name: "Alomgyar staging"
+    url: https://staging.alomgyar.hu
+  script:
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" >> ~/.ssh/id_rsa
+    - echo "$SSH_PRIVATE_KEY"
+    - chmod 600 ~/.ssh/id_rsa
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+    - apt-get update && apt-get -qq install rsync openssh-client
+    - ssh gitlab@80.211.121.129 "rm -Rf /var/www/alomgyar-frontend/${CI_COMMIT_REF_NAME}"
+    - ssh gitlab@80.211.121.129 "rm -Rf /var/www/olcsokonyvek-frontend/${CI_COMMIT_REF_NAME}"
+    - ssh gitlab@80.211.121.129 "rm -Rf /var/www/nagyker-frontend/${CI_COMMIT_REF_NAME}"
+    - rsync --mkpath -rav --no-perms --no-owner --no-group -I --omit-dir-times ./ gitlab@80.211.121.129:/var/www/alomgyar-frontend/${CI_COMMIT_REF_NAME}/
+    - rsync --mkpath -rav --no-perms --no-owner --no-group -I --omit-dir-times ./ gitlab@80.211.121.129:/var/www/olcsokonyvek-frontend/${CI_COMMIT_REF_NAME}/
+    - rsync --mkpath -rav --no-perms --no-owner --no-group -I --omit-dir-times ./ gitlab@80.211.121.129:/var/www/nagyker-frontend/${CI_COMMIT_REF_NAME}/
+    - ssh gitlab@80.211.121.129 "cd /var/www/alomgyar-frontend/${CI_COMMIT_REF_NAME} && pm2 delete -s alomgyar-${CI_COMMIT_REF_NAME} || :"
+    - ssh gitlab@80.211.121.129 "cd /var/www/alomgyar-frontend/${CI_COMMIT_REF_NAME} && pm2 start --name alomgyar-${CI_COMMIT_REF_NAME} \"npm run start-alomgyar-${CI_COMMIT_REF_NAME}\""
+    - ssh gitlab@80.211.121.129 "cd /var/www/olcsokonyvek-frontend/${CI_COMMIT_REF_NAME} && pm2 delete -s olcsokonyvek-${CI_COMMIT_REF_NAME} || :"
+    - ssh gitlab@80.211.121.129 "cd /var/www/olcsokonyvek-frontend/${CI_COMMIT_REF_NAME} && pm2 start --name olcsokonyvek-${CI_COMMIT_REF_NAME} \"npm run start-olcsokonyvek-${CI_COMMIT_REF_NAME}\""
+    - ssh gitlab@80.211.121.129 "cd /var/www/nagyker-frontend/${CI_COMMIT_REF_NAME} && pm2 delete -s nagyker-${CI_COMMIT_REF_NAME} || :"
+    - ssh gitlab@80.211.121.129 "cd /var/www/nagyker-frontend/${CI_COMMIT_REF_NAME} && pm2 start --name nagyker-${CI_COMMIT_REF_NAME} \"npm run start-nagyker-${CI_COMMIT_REF_NAME}\""
+
+
+build_prod:
+  stage: build
+  only:
+    - prod
+  script:
+    - apt-get update
+    - apt-get install ca-certificates -y
+    # - rm .sentryclirc
+    - echo "$SENTRY_CLI_TOKEN" > .sentryclirc
+    # - rm .env
+    - echo "$PROD_ENV" > .env
+    - npm install
+    - npm run build
+    #- npx next build
+  artifacts:
+    paths:
+      - node_modules/
+      - .next/
+      - .env
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
+      - .next/cache/
+
+deploy_prod:
+  stage: deploy
+  only:
+    - prod
+  environment:
+    name: "Alomgyar"
+    url: https://alomgyar.hu
+  script:
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" >> ~/.ssh/id_rsa
+    - echo "$SSH_PRIVATE_KEY"
+    - chmod 600 ~/.ssh/id_rsa
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+    - apt-get update && apt-get -qq install rsync openssh-client
+    - ssh gitlab@195.231.36.254 "rm -Rf /var/www/alomgyar-frontend/${CI_COMMIT_REF_NAME}"
+    - ssh gitlab@195.231.36.254 "rm -Rf /var/www/olcsokonyvek-frontend/${CI_COMMIT_REF_NAME}"
+    - ssh gitlab@195.231.36.254 "rm -Rf /var/www/nagyker-frontend/${CI_COMMIT_REF_NAME}"
+    - rsync --mkpath -rav --no-perms --no-owner --no-group -I --omit-dir-times ./ gitlab@195.231.36.254:/var/www/alomgyar-frontend/${CI_COMMIT_REF_NAME}/
+    - rsync --mkpath -rav --no-perms --no-owner --no-group -I --omit-dir-times ./ gitlab@195.231.36.254:/var/www/olcsokonyvek-frontend/${CI_COMMIT_REF_NAME}/
+    - rsync --mkpath -rav --no-perms --no-owner --no-group -I --omit-dir-times ./ gitlab@195.231.36.254:/var/www/nagyker-frontend/${CI_COMMIT_REF_NAME}/
+    - ssh gitlab@195.231.36.254 "cd /var/www/alomgyar-frontend/${CI_COMMIT_REF_NAME} && pm2 delete -s alomgyar-${CI_COMMIT_REF_NAME} || :"
+    - ssh gitlab@195.231.36.254 "cd /var/www/olcsokonyvek-frontend/${CI_COMMIT_REF_NAME} && pm2 delete -s olcsokonyvek-${CI_COMMIT_REF_NAME} || :"
+    - ssh gitlab@195.231.36.254 "cd /var/www/nagyker-frontend/${CI_COMMIT_REF_NAME} && pm2 delete -s nagyker-${CI_COMMIT_REF_NAME} || :"
+    - ssh gitlab@195.231.36.254 "cd /var/www/alomgyar-frontend/${CI_COMMIT_REF_NAME} && pm2 start --name alomgyar-${CI_COMMIT_REF_NAME} \"npm run start-alomgyar-${CI_COMMIT_REF_NAME}\""
+    - ssh gitlab@195.231.36.254 "cd /var/www/olcsokonyvek-frontend/${CI_COMMIT_REF_NAME} && pm2 start --name olcsokonyvek-${CI_COMMIT_REF_NAME} \"npm run start-olcsokonyvek-${CI_COMMIT_REF_NAME}\""
+    - ssh gitlab@195.231.36.254 "cd /var/www/nagyker-frontend/${CI_COMMIT_REF_NAME} && pm2 start --name nagyker-${CI_COMMIT_REF_NAME} \"npm run start-nagyker-${CI_COMMIT_REF_NAME}\""
